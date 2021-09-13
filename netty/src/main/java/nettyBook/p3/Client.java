@@ -21,6 +21,11 @@ import nettyBook.p1.Response;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * 不使用 Netty 的 Promise，而是使用 RequestFuture.get 完成阻塞等待异步响应。
+ * <p>p2 中，ClientHandler收到服务端请求后，在 channelRead 方法中调用 Promise 的 setSuccess 通知阻塞的 get</p>
+ * <p>p3 中，ClientHandler收到服务端请求后，在 channelRead 方法中调用 RequestFuture 的 received 通知阻塞的 get</p>
+ */
 public class Client {
     private static ChannelFuture future;
 

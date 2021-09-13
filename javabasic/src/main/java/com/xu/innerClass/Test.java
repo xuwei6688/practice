@@ -1,6 +1,7 @@
 package com.xu.innerClass;
 
 import java.util.HashMap;
+import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -8,8 +9,11 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 public class Test {
     public static void main(String[] args) {
-        ConcurrentHashMap map = new ConcurrentHashMap();
-
+        PriorityQueue<Integer> queue = new PriorityQueue<>(3);
+        queue.add(1);
+        queue.add(3);
+        queue.add(2);
+        System.out.println(queue);
     }
 
     private static int resizeStamp(int n) {
