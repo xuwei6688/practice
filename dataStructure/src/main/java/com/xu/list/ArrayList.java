@@ -122,6 +122,11 @@ public class ArrayList<E> implements List<E> {
 
         elements[size - 1] = null;
         size--;
+
+        //如果实际使用容量是总容量的四分之一，那么缩减容量为原来的二分之一，这样可以预留出四分之一的容量，防止复杂度震荡。
+        if (size == getCapacity() / 4) {
+            resize(getCapacity() / 2);
+        }
         return e;
     }
 
@@ -145,5 +150,9 @@ public class ArrayList<E> implements List<E> {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    private int getCapacity() {
+        return elements.length;
     }
 }
