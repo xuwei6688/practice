@@ -8,6 +8,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.FixedLengthFrameDecoder;
 
 /**
  * @Author xuwei
@@ -28,9 +29,11 @@ public class NettyServer {
                     .option(ChannelOption.SO_BACKLOG, 128)//设置线程队列得到连接个数
                     .childOption(ChannelOption.SO_KEEPALIVE, true)//设置保持活动连接状态
                     .childHandler(new ChannelInitializer<SocketChannel>() {
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
+                        protected void initChannel(SocketChannel ch) throws Exception {
                             //给pipeline设置处理器
-                            socketChannel.pipeline().addLast(new NettyServerHandler());
+                            ch.pipeline().addLast(new FixedLengthFrameDecoder(10));
+                            ch.pipeline().addLast(new ResponseSampleEncoder());
+                            ch.pipeline().addLast(new RequestSampleHandler());
                         }
                     });
 

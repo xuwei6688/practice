@@ -1,6 +1,5 @@
 package nio.goupChat;
 
-import sun.dc.pr.PRError;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
