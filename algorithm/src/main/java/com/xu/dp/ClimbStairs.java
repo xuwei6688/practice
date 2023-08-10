@@ -23,21 +23,12 @@ package com.xu.dp;
  */
 public class ClimbStairs {
     public int climbStairs(int n) {
-        //index i 存爬到 i 阶有多少种方法
-        int[] memory = new int[n + 1];
-
+        int[] memory = new int[n + 2];
 
         memory[1] = 1;
-        if (n >= 2) {
-            memory[2] =2;
-        }
+        memory[2] = 2;
 
-
-        for (int i = 3; i <=n ; i++) {
-            //要爬上i阶台阶有两种方法：
-            //1.从i-1阶台阶爬上来
-            //2.从i-2阶台阶爬上来
-            //只需相加即可
+        for (int i = 3; i <= n; i++) {
             memory[i] = memory[i - 1] + memory[i - 2];
         }
         return memory[n];
