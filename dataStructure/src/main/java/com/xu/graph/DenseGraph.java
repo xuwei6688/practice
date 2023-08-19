@@ -6,7 +6,7 @@ import com.xu.list.List;
 import java.util.Arrays;
 import java.util.Random;
 
-public  class DenseGraph {
+public  class DenseGraph implements Graph {
     private int n;//点数
     private int m;//边数
     private boolean directed;//是否是有向图
@@ -48,9 +48,14 @@ public  class DenseGraph {
 
         g[v][w] = true;
         if (!directed) {//无向图可以看做两个方向都有边的有向图
-            g[v][w] = true;
+            g[w][v] = true;
         }
         m++;
+    }
+
+    @Override
+    public Iterator iterator(int v) {
+        return new AdjIterator(this, v);
     }
 
     boolean hasEdge(int v, int w) {
@@ -63,7 +68,7 @@ public  class DenseGraph {
         return g[v][w];
     }
 
-   public static class AdjIterator{
+   public class AdjIterator implements Iterator{
         private DenseGraph G;//当前迭代的稠密图
         private int v;  //遍历的点
         private int index;//迭代位置
@@ -105,7 +110,7 @@ public  class DenseGraph {
 
         for (int v = 0; v < N; v++) {
             System.out.print(v + ":");
-            AdjIterator iterator = new AdjIterator(denseGraph, v);
+            Iterator iterator = denseGraph.iterator(v);
             for (int w = iterator.begin(); !iterator.end(); w = iterator.next()) {
                 System.out.print(w + " ");
             }

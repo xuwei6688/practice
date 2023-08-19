@@ -5,7 +5,7 @@ import com.xu.list.List;
 
 import java.util.Random;
 
-public class SparseGraph {
+public class SparseGraph implements Graph{
     private int n;//顶点个数
     private int m;//边个数
     private boolean directed;//是否是有向图
@@ -23,11 +23,11 @@ public class SparseGraph {
 
     //返回点个数
     public int V() {
-        return m;
+        return n;
     }
     //返回边个数
     public int E(){
-        return n;
+        return m;
     }
 
     public void addEdge(int v, int w) {
@@ -45,7 +45,12 @@ public class SparseGraph {
         m++;
     }
 
-    public static class SpaIterator{
+    @Override
+    public Iterator iterator(int v) {
+        return new SpaIterator(this, v);
+    }
+
+    public class SpaIterator implements Iterator{
         private SparseGraph G;
         private int v;
         private int index;
@@ -89,7 +94,7 @@ public class SparseGraph {
 
         for (int v = 0; v < N; v++) {
             System.out.print(v + ":");
-            SparseGraph.SpaIterator iterator = new SparseGraph.SpaIterator(graph, v);
+            Iterator iterator = graph.iterator(v);
             for (int w = iterator.begin(); !iterator.end(); w = iterator.next()) {
                 System.out.print(w + " ");
             }
