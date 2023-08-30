@@ -1,6 +1,9 @@
 package com.xu;
 
+import com.xu.graph2.Edge;
+import com.xu.graph2.Weight;
 import com.xu.heap.MaxHeap;
+import com.xu.heap.MinHeap;
 import org.junit.Test;
 
 import java.util.Random;
@@ -75,4 +78,38 @@ public class HeapTest {
             if(arr[i-1] < arr[i])
                 throw new IllegalArgumentException("Error");
      }
+
+    @Test
+    public void testMinHeap() {
+        int n = 1000000;
+        MinHeap<Integer> minHeap = new MinHeap<>(1000000);
+        Random random = new Random();
+        for(int i = 0 ; i < n ; i ++)
+            minHeap.add(random.nextInt(Integer.MAX_VALUE));
+
+        int[] arr = new int[n];
+        for(int i = 0 ; i < n ; i ++)
+            arr[i] = minHeap.extractMin();
+
+        for(int i = 1 ; i < n ; i ++)
+            if(arr[i-1] > arr[i])
+                throw new IllegalArgumentException("Error");
+    }
+
+    @Test
+    public void testMinHeap2() {
+        int n = 10000;
+        MinHeap<Edge> minHeap = new MinHeap<>(n);
+        Random random = new Random();
+        for(int i = 0 ; i < n ; i ++)
+            minHeap.add(new Edge(1,2, new Weight(random.nextDouble())));
+
+        double[] arr = new double[n];
+        for(int i = 0 ; i < n ; i ++)
+            arr[i] = minHeap.extractMin().wt().getWt();
+
+        for(int i = 1 ; i < n ; i ++)
+            if(arr[i-1] > arr[i])
+                throw new IllegalArgumentException("Error");
+    }
 }
