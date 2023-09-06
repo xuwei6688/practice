@@ -2,7 +2,7 @@ package com.xu.graph2;
 
 import java.util.Objects;
 
-public class Weight {
+public class Weight implements Comparable<Weight>{
     private double wt;
 
     public Weight(double wt) {
@@ -33,5 +33,14 @@ public class Weight {
     @Override
     public String toString() {
        return String.valueOf(wt);
+    }
+
+    @Override
+    public int compareTo(Weight other) {
+        if (wt == other.getWt()) {
+            return 0;
+        }
+
+        return wt - other.getWt() > 0 ? 1 : -1;
     }
 }

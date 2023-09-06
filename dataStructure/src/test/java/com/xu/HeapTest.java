@@ -5,6 +5,7 @@ import com.xu.graph2.Weight;
 import com.xu.heap.MaxHeap;
 import com.xu.heap.MaxIndexHeap;
 import com.xu.heap.MinHeap;
+import com.xu.heap.MinIndexHeap;
 import org.junit.Test;
 
 import java.util.Random;
@@ -149,5 +150,42 @@ public class HeapTest {
             if(arr[i-1] < arr[i])
                 throw new IllegalArgumentException("Error");
 
+    }
+
+    @Test
+    public void testMinIndexHeapChange() {
+        int n = 100000;
+        MinIndexHeap<Integer> minIndexHeap = new MinIndexHeap<>(n);
+        Random random = new Random();
+        for(int i = 0 ; i < n ; i ++)
+            minIndexHeap.add(random.nextInt(Integer.MAX_VALUE));
+
+        minIndexHeap.change(100, 1);
+
+        int[] arr = new int[n];
+        for(int i = 0 ; i < n ; i ++)
+            arr[i] = minIndexHeap.extractMin();
+
+        for(int i = 1 ; i < n ; i ++)
+            if(arr[i-1] > arr[i])
+                throw new IllegalArgumentException("Error");
+    }
+
+
+    @Test
+    public void testMinIndexHeap2() {
+        int n = 10;
+        MinIndexHeap<Integer> minIndexHeap = new MinIndexHeap<>(n);
+        Random random = new Random();
+        for(int i = 0 ; i < n ; i ++)
+            minIndexHeap.insert(9-i, random.nextInt(100));
+
+        int[] arr = new int[n];
+        for(int i = 0 ; i < n ; i ++)
+            arr[i] = minIndexHeap.extractMin();
+
+        for(int i = 1 ; i < n ; i ++)
+            if(arr[i-1] > arr[i])
+                throw new IllegalArgumentException("Error");
     }
 }

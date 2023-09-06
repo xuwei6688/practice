@@ -20,7 +20,7 @@ public class ListTest {
         list = new LinkedList<>();
     }
 
-    @After
+//    @After
     public void after() {
         Assert.assertEquals(0, list.size());
         list.add(0, "A");
@@ -50,5 +50,20 @@ public class ListTest {
 
         list.remove("B");
         Assert.assertEquals("[A]", list.toString());
+
+
+        list.add(0, "C");
+        Assert.assertEquals("[C,A]", list.toString());
+    }
+
+
+    @After
+    public void after2() {
+        Assert.assertEquals(0, list.size());
+        list.add(6, "A");
+        list.add(2, "B");
+
+        Assert.assertEquals("[B,A]", list.toString());
+        Assert.assertEquals(2, list.size());
     }
 }
