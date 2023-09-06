@@ -3,6 +3,7 @@ package com.xu;
 import com.xu.graph2.Edge;
 import com.xu.graph2.Weight;
 import com.xu.heap.MaxHeap;
+import com.xu.heap.MaxIndexHeap;
 import com.xu.heap.MinHeap;
 import org.junit.Test;
 
@@ -111,5 +112,42 @@ public class HeapTest {
         for(int i = 1 ; i < n ; i ++)
             if(arr[i-1] > arr[i])
                 throw new IllegalArgumentException("Error");
+    }
+
+    @Test
+    public void testMaxIndexHeap() {
+        int n = 1000000;
+        MaxIndexHeap<Integer> maxIndexHeap = new MaxIndexHeap<>(n);
+        Random random = new Random();
+        for(int i = 0 ; i < n ; i ++)
+            maxIndexHeap.add(random.nextInt(Integer.MAX_VALUE));
+
+        int[] arr = new int[n];
+        for(int i = 0 ; i < n ; i ++)
+            arr[i] = maxIndexHeap.extractMax();
+
+        for(int i = 1 ; i < n ; i ++)
+            if(arr[i-1] < arr[i])
+                throw new IllegalArgumentException("Error");
+    }
+
+    @Test
+    public void testMaxIndexHeapChange() {
+        int n = 100000;
+        MaxIndexHeap<Integer> maxIndexHeap = new MaxIndexHeap<>(n);
+        Random random = new Random();
+        for(int i = 0 ; i < n ; i ++)
+            maxIndexHeap.add(random.nextInt(Integer.MAX_VALUE));
+
+        maxIndexHeap.change(100, 1);
+
+        int[] arr = new int[n];
+        for(int i = 0 ; i < n ; i ++)
+            arr[i] = maxIndexHeap.extractMax();
+
+        for(int i = 1 ; i < n ; i ++)
+            if(arr[i-1] < arr[i])
+                throw new IllegalArgumentException("Error");
+
     }
 }
