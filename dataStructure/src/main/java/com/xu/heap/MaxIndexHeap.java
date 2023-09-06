@@ -10,13 +10,18 @@ import com.xu.list.ArrayList;
 public class MaxIndexHeap<E extends Comparable<E>> {
     private final ArrayList<Integer> indexes;
     private final ArrayList<E> data;
+    private final ArrayList<Integer> reverse;
+
     private int count;
 
     public MaxIndexHeap(int capacity) {
         indexes = new ArrayList<>(capacity + 1);
         data = new ArrayList<>(capacity + 1);
+        reverse = new ArrayList<>(capacity + 1);//约定reverse数组默认值为0
+
         //从index=1开始记录数据
         indexes.add(0);
+        reverse.add(0);
         data.add((E) null);
         count = 0;
     }
@@ -44,8 +49,10 @@ public class MaxIndexHeap<E extends Comparable<E>> {
     }
 
     public void add(E e) {
-        data.add(count + 1, e);
-        indexes.add(count + 1, count + 1);
+        int i = count + 1;
+        data.add(i, e);
+        indexes.add(i, i);
+        reverse.add(i, i);
 
         count++;
         siftUp(count);
@@ -54,7 +61,9 @@ public class MaxIndexHeap<E extends Comparable<E>> {
     public E extractMax() {
         E result = findMax();
 
-        indexes.set(indexes.get(count),1);
+        indexes.set(indexes.get(count), 1);
+        reverse.set(0, indexes.get(count));//count位置元素被删除，因此对应0
+        reverse.set(1, indexes.get(1));
 
         siftDown(1);
         count--;
@@ -70,13 +79,25 @@ public class MaxIndexHeap<E extends Comparable<E>> {
         i++;
         data.set(e, i);
 
-        for (int j=1; j <= count; j++) {
-            if (indexes.get(j) == i) {
-                siftUp(j);
-                siftDown(j);
-                return;
-            }
+        if (!contain(i)) {
+            throw new IllegalArgumentException("index i haven't data");
         }
+
+        int j = reverse.get(i);
+        siftUp(j);
+        siftDown(j);
+
+//        for (int j=1; j <= count; j++) {
+//            if (indexes.get(j) == i) {
+//                siftUp(j);
+//                siftDown(j);
+//                return;
+//            }
+//        }
+    }
+
+    private boolean contain(int i) {
+        return reverse.get(i) != 0;
     }
 
     private E getDataByIndex(int index) {
@@ -89,6 +110,8 @@ public class MaxIndexHeap<E extends Comparable<E>> {
     private void siftUp(int index) {
         while (index > 1 && getDataByIndex(index).compareTo(getDataByIndex(parentIndex(index))) > 0) {
             swap(index, parentIndex(index));
+            reverse.set(index, indexes.get(index));
+            reverse.set(parentIndex(index), indexes.get(parentIndex(index)));
             index = parentIndex(index);
         }
     }
@@ -106,6 +129,8 @@ public class MaxIndexHeap<E extends Comparable<E>> {
             }
 
             swap(index, j);
+            reverse.set(index, indexes.get(index));
+            reverse.set(j, indexes.get(j));
             index = j;
         }
     }
