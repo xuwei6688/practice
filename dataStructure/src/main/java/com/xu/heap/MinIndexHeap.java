@@ -40,6 +40,7 @@ public class MinIndexHeap <E extends Comparable<E>> {
         return count;
     }
 
+
     public boolean isEmpty() {
         return count == 0;
     }
@@ -100,6 +101,11 @@ public class MinIndexHeap <E extends Comparable<E>> {
         int j = reverse[i];
         siftUp(j);
         siftDown(j);
+    }
+
+
+    public boolean contains(int index) {
+        return reverse[index+1] != 0;
     }
 
     private boolean contain(int i) {

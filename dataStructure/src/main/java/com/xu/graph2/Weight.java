@@ -5,6 +5,10 @@ import java.util.Objects;
 public class Weight implements Comparable<Weight>{
     private double wt;
 
+    public Weight() {
+        this.wt = 0d;
+    }
+
     public Weight(double wt) {
         this.wt = wt;
     }
