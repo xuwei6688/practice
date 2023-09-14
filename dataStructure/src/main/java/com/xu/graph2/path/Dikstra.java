@@ -17,42 +17,37 @@ import java.util.Stack;
 
 public class Dikstra {
     private Graph G;
-    private int s;//源点
-
-    private Weight[] distTo;//到达某一点的最短路径权重，例如distTo[3]表示从s到3这一点的最短路径
-    private boolean[] marked;//标记访问过的点
-    private Edge[] from;//到达某一点的最短路径是从哪条边过来的
+    private int s;
+    private Weight[] distTo;
+    private Edge[] from;
+    private boolean[] marked;
 
 
     public Dikstra(Graph g, int s) {
-        G = g;
-        this.s = s;
+       this.G = g;
+       this.s = s;
 
         distTo = new Weight[G.V()];
-        marked = new boolean[G.V()];
         from = new Edge[G.V()];
-
-        for (int i = 0; i < G.V(); i++) {
-            distTo[i] = new Weight();
-        }
+        marked = new boolean[G.V()];
 
         MinIndexHeap<Weight> ipq = new MinIndexHeap<>(G.V());
-        distTo[s] = new Weight();
-        marked[s] = true;
-        ipq.insert(s, distTo[s]);
+        ipq.insert(0, new Weight());
+        marked[0] = true;
+        distTo[0] = new Weight();
 
         while (!ipq.isEmpty()) {
             int v = ipq.extractMinIndex();
             marked[v] = true;
 
-            //松弛操作
             Iterator iterator = G.iterator(v);
             for (Edge e = iterator.begin(); !iterator.end(); e = iterator.next()) {
                 int w = e.other(v);
                 if (!marked[w]) {
                     if (from[w] == null || distTo[v].getWt() + e.wt().getWt() < distTo[w].getWt()) {
-                        distTo[w] = new Weight(distTo[v].getWt() + e.wt().getWt());
                         from[w] = e;
+                        distTo[w] = new Weight(distTo[v].getWt() + e.wt().getWt());
+
                         if (ipq.contains(w)) {
                             ipq.change(w, distTo[w]);
                         }else {
