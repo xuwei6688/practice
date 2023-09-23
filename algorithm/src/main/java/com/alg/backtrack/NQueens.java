@@ -10,56 +10,58 @@ import java.util.List;
  * 题解：https://www.yuque.com/wozaiyinshen/vtwlns/wdws0sgtuffy53gs
  */
 public class NQueens {
+    private boolean []col;//存纵列的放置情况
+    private boolean []disa1;//存左下到右上的放置情况
+    private boolean []disa2;
+    private List<List<String>> result = new ArrayList<>();//存放结果
 
-    private List<List<String>> res = new ArrayList<>();
-    boolean []col;
-    boolean []dias1;
-    boolean []dias2;
 
     /**
-     * n皇后，第index行，皇后存放在row[index]列
+     * @param index 当前遍历到第几行
+     * @param n  n*n的横纵
+     * @param rows rows[1]=4 说明第二行第四列存放皇后
      */
-    private void dfs(int n, int index, int[] row) {
+    private void dfs(int index, int n, int[] rows) {
         if (index == n) {
-            res.add(generate(row));
+            result.add(generate(rows));
             return;
         }
 
-        for (int i = 0; i < n; i++) {
-            if (!col[i] && !dias1[index + i] && !dias2[i - index + n - 1]) {
-                row[index] = i;
-                col[i] = true;
-                dias1[index + i] = true;
-                dias2[i - index + n - 1] = true;
+        for (int i = 0; i < rows.length; i++) {
+            //同一列、两个斜着的纵列都没有放置过
+            if (!col[i] && !disa1[index + i] && !disa2[i - index + n - 1]) {
+                rows[index] = i;
 
-                dfs(n, index+1, row);
+                col[i] = true;
+                disa1[index + i] = true;
+                disa2[i - index + n - 1] = true;
+
+                dfs(index+1, n, rows);
 
                 col[i] = false;
-                dias1[index + i] = false;
-                dias2[i - index + n - 1] = false;
-                row[index] = 0;
+                disa1[index + i] = false;
+                disa2[i - index + n - 1] = false;
             }
         }
     }
 
     private List<String> generate(int[] rows) {
         List<String> result = new ArrayList<>();
-        for (int i = 0; i < rows.length; i++) {
+        for (int j : rows) {
             char[] row = new char[rows.length];
             Arrays.fill(row, '.');
-            row[rows[i]] = 'Q';
+            row[j] = 'Q';
             result.add(new String(row));
         }
         return result;
     }
-
     public List<List<String>> solveNQueens(int n) {
         col = new boolean[n];
-        dias1 = new boolean[2 * n - 1];
-        dias2 = new boolean[2 * n - 1];
+        disa1 = new boolean[2 * n - 1];
+        disa2 = new boolean[2 * n - 1];
 
-        dfs(n, 0, new int[n]);
-        return res;
+        dfs(0, n, new int[n]);
+        return result;
     }
 
     public static void main(String[] args) {
