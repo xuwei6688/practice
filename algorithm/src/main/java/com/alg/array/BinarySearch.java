@@ -1,5 +1,7 @@
 package com.alg.array;
 
+import org.junit.Assert;
+
 /**
  * 二分查找法
  * @Author xuwei
@@ -8,20 +10,30 @@ package com.alg.array;
  **/
 public class BinarySearch {
 
-    public  int search(int[] array, int target) {
-        //在[l,r]区间内搜索target
+    public int search(int[] nums, int target) {
         int l = 0;
-        int r = array.length -1;
+        int r = nums.length - 1;
+
         while (l <= r) {
             int mid = l + (r - l) / 2;
-            if (array[mid] == target) {
+            if (nums[mid] == target) {
                 return mid;
-            } else if (array[mid] < target) {
+            } else if (nums[mid] < target) {
                 l = mid + 1;
-            }else {
+            } else if (nums[mid] > target) {
                 r = mid - 1;
             }
         }
         return -1;
+    }
+
+    public static void main(String[] args) {
+        BinarySearch binarySearch = new BinarySearch();
+
+        int[] nums = {-1, 0, 3, 5, 9, 12};
+        Assert.assertEquals(4, binarySearch.search(nums, 9));
+
+        int[] nums2 = {-1,0,3,5,9,12};
+        Assert.assertEquals(-1, binarySearch.search(nums2, 2));
     }
 }
