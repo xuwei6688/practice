@@ -7,15 +7,17 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class AVL<E extends Comparable<E>> implements BinarySearchTree<E>{
-    private class Node{
+    class Node{
         E e;
         Node left;
         Node right;
+        int height;
 
         public Node(E e, Node left, Node right) {
             this.e = e;
             this.left = left;
             this.right = right;
+            this.height = 0;
         }
     }
 
@@ -50,11 +52,36 @@ public class AVL<E extends Comparable<E>> implements BinarySearchTree<E>{
 
         if (e.compareTo(node.e) < 0) {
             node.left = add(node.left, e);
-            return node;
         }else {
             node.right = add(node.right, e);
-            return node;
         }
+        //当前树高度 = 左右子树中最高的高度 + 1
+        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+
+        return maintainBalance(node);
+    }
+
+    private Node maintainBalance(Node node) {
+        int balanceFactor = getBalanceFactor(node);
+        //LL
+        if (balanceFactor > 1 && getBalanceFactor(node.left) >= 0) {
+            return rightRotate(node);
+        }
+        //RR
+        if (balanceFactor < -1 && getBalanceFactor(node.right) <= 0) {
+            return leftRotate(node);
+        }
+        //LR
+        if (balanceFactor > 1 && getBalanceFactor(node.left) < 0) {
+            node.left = leftRotate(node.left);
+            return rightRotate(node);
+        }
+        //RL
+        if (balanceFactor < -1 && getBalanceFactor(node.right ) > 0) {
+            node.right = rightRotate(node.right);
+            return leftRotate(node);
+        }
+        return node;
     }
 
     @Override
@@ -63,17 +90,8 @@ public class AVL<E extends Comparable<E>> implements BinarySearchTree<E>{
             return null;
         }
         E e = minimum();
-        root = removeMin(root);
+        root = remove(root, e);
         return e;
-    }
-
-    private Node removeMin(Node node) {
-        if (node.left == null) {
-            size--;
-            return node.right;
-        }
-        node.left = removeMin(node.left);
-        return node;
     }
 
     @Override
@@ -82,17 +100,8 @@ public class AVL<E extends Comparable<E>> implements BinarySearchTree<E>{
             return null;
         }
         E e = maximum();
-        root = removeMax(root);
+        root = remove(root, e);
         return e;
-    }
-
-    private Node removeMax(Node node) {
-        if (node.right == null) {
-            size--;
-            return node.left;
-        }
-        node.right = removeMax(node.right);
-        return node;
     }
 
     @Override
@@ -119,27 +128,35 @@ public class AVL<E extends Comparable<E>> implements BinarySearchTree<E>{
         if (node == null) {
             return null;
         }
+        Node retNode = null;
         if (e.compareTo(node.e) < 0) {
             node.left = remove(node.left, e);
-            return node;
+            retNode = node;
         }else if (e.compareTo(node.e) > 0){
             node.right = remove(node.right, e);
-            return node;
+            retNode = node;
         }else {
             if (node.left == null) {
                 size--;
-                return node.right;
+                retNode = node.right;
             } else if (node.right == null) {
                 size--;
-                return node.left;
+                retNode = node.left;
             } else {
                 Node successor = minimum(node.right);
-                successor.right = removeMin(node.right);
+                successor.right = remove(node.right, successor.e);
                 successor.left = node.left;
-                return successor;
+                retNode = successor;
             }
         }
+        if (retNode == null) {
+            return null;
+        }
+        //当前树高度 = 左右子树中最高的高度 + 1
+        retNode.height = 1 + Math.max(getHeight(retNode.left), getHeight(retNode.right));
+        return maintainBalance(retNode);
     }
+
 
     @Override
     public boolean contains(E e) {
@@ -211,5 +228,82 @@ public class AVL<E extends Comparable<E>> implements BinarySearchTree<E>{
             return node;
         }
         return minimum(node.left);
+    }
+
+    private int getHeight(Node node) {
+        if (node == null) {
+            return 0;
+        }
+        return node.height;
+    }
+
+    private int getBalanceFactor(Node node) {
+        if (node == null) {
+            return 0;
+        }
+        return getHeight(node.left) - getHeight(node.right);
+    }
+
+    @Override
+    public boolean isBalanced() {
+        return isBalanced(root);
+    }
+
+    private boolean isBalanced(Node node) {
+        if (node == null) {
+            return true;
+        }
+        int balanceFactor = getBalanceFactor(node);
+        if (Math.abs(balanceFactor) > 1) {
+            return false;
+        }
+        //为什么还需要递归看子树呢？明明该节点的左右子树高度都相同
+        //这是因为虽然左右子树高度相同，但是可能左右子树是两个链表，不一定是平衡二叉树
+        return isBalanced(node.left) && isBalanced(node.right);
+    }
+
+
+    // 对节点y进行向右旋转操作，返回旋转后新的根节点x
+    //        y                              x
+    //       / \                           /   \
+    //      x   T4     向右旋转 (y)        z     y
+    //     / \       - - - - - - - ->    / \   / \
+    //    z   T3                       T1  T2 T3 T4
+    //   / \
+    // T1   T2
+    public Node rightRotate(Node y) {
+        Node x = y.left;
+        Node T3 = x.right;
+
+        //右旋过程
+        y.left= T3;
+        x.right = y;
+
+        //维护高度 维护高度的顺序很重要
+        y.height = 1 + Math.max(getHeight(y.left), getHeight(y.right));
+        x.height = 1 + Math.max(getHeight(x.left), getHeight(x.right));
+        return x;
+    }
+
+    // 对接点y进行左旋转操作，返回旋转后的新的根节点x
+    //      y                               x
+    //     / \                            /   \
+    //    T1  x                          y      z
+    //       /  \                      /   \   /  \
+    //      T2   z                    T1   T2  T3   T4
+    //          /  \
+    //         T3   T4
+    public Node leftRotate(Node y) {
+        Node x = y.right;
+        Node T2 = x.left;
+
+        //左旋过程
+        y.right = T2;
+        x.left = y;
+
+        //维护高度
+        y.height = 1 + Math.max(getHeight(y.left), getHeight(y.right));
+        x.height = 1 + Math.max(getHeight(x.left), getHeight(x.right));
+        return x;
     }
 }

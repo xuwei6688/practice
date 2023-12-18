@@ -209,4 +209,9 @@ public class BST<E extends Comparable<E>> implements BinarySearchTree<E>{
         }
         return maximum(root).e;
     }
+
+    @Override
+    public boolean isBalanced() {
+        return false;
+    }
 }

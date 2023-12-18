@@ -24,4 +24,6 @@ public interface BinarySearchTree<E extends Comparable<E>> {
     E minimum();
 
     E maximum();
+
+    boolean isBalanced();
 }

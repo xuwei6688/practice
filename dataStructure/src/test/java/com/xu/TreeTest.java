@@ -149,7 +149,6 @@ public class TreeTest {
         result = bst.removeMin();
         assertEquals(60L, (int)result);
 
-
         result = bst.removeMin();
         assertNull(result);
 
