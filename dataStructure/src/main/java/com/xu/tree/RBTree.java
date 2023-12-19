@@ -66,6 +66,7 @@ public class RBTree<E extends Comparable<E>> implements BinarySearchTree<E>{
         }
 
         //当前节点是 2 节点，并且插入节点在当前节点右侧 --》左旋
+        //还有种情况是插入到了3节点中间，也会进入这里先左旋一下子
         if (isRed(node.right) && !isRed(node.left)) {
             node = leftRotate(node);
         }
