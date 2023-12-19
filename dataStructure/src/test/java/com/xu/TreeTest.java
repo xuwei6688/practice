@@ -2,8 +2,7 @@ package com.xu;
 
 
 import com.xu.list.*;
-import com.xu.tree.AVL;
-import com.xu.tree.BST;
+import com.xu.tree.AVLTree;
 import com.xu.tree.BinarySearchTree;
 import org.junit.Test;
 
@@ -12,7 +11,7 @@ import static org.junit.Assert.*;
 public class TreeTest {
     public BinarySearchTree<Integer> createBST() {
 //        return new BST<>();
-        return new AVL<>();
+        return new AVLTree<>();
     }
 
     @Test
